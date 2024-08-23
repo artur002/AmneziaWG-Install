@@ -267,24 +267,24 @@ function installAmneziaWG() {
 				sed -i 's/^deb/deb-src/' /etc/apt/sources.list.d/amneziawg.sources.list
 			fi
 		fi
-		apt install -y software-properties-common
-		add-apt-repository -y ppa:amnezia/ppa
-		apt install -y amneziawg amneziawg-tools qrencode
+		sudo apt install -y software-properties-common python3-launchpadlib gnupg2 linux-headers-$(uname -r)
+		sudo add-apt-repository ppa:amnezia/ppa
+  		sudo apt-get install -y amneziawg amneziawg-tools qrencode
 	elif [[ ${OS} == 'debian' ]]; then
 		if ! grep -q "^deb-src" /etc/apt/sources.list; then
 			cp /etc/apt/sources.list /etc/apt/sources.list.d/amneziawg.sources.list
 			sed -i 's/^deb/deb-src/' /etc/apt/sources.list.d/amneziawg.sources.list
 		fi
+		
+  		apt install -y software-properties-common python3-launchpadlib gnupg2 linux-headers-$(uname -r)
 		apt-key adv --keyserver keyserver.ubuntu.com --recv-keys 57290828
-		echo "deb https://ppa.launchpadcontent.net/amnezia/ppa/ubuntu focal main" >>/etc/apt/sources.list.d/amneziawg.sources.list
-		echo "deb-src https://ppa.launchpadcontent.net/amnezia/ppa/ubuntu focal main" >>/etc/apt/sources.list.d/amneziawg.sources.list
-		apt update
-		apt install -y amneziawg amneziawg-tools qrencode iptables
-	elif [[ ${OS} == 'fedora' ]]; then
-		dnf config-manager --set-enabled crb
-		dnf install -y epel-release
-		dnf copr enable -y amneziavpn/amneziawg
-		dnf install -y amneziawg-dkms amneziawg-tools qrencode iptables
+		echo "deb https://ppa.launchpadcontent.net/amnezia/ppa/ubuntu focal main" | tee -a /etc/apt/sources.list
+		echo "deb-src https://ppa.launchpadcontent.net/amnezia/ppa/ubuntu focal main" | tee -a /etc/apt/sources.list
+		apt-get update
+		apt-get install -y amneziawg amneziawg-tools qrencode
+ 	elif [[ ${OS} == 'fedora' ]]; then
+		sudo dnf copr enable amneziavpn/amneziawg
+		sudo dnf install amneziawg-dkms amneziawg-tools
 	elif [[ ${OS} == 'centos' ]] || [[ ${OS} == 'almalinux' ]] || [[ ${OS} == 'rocky' ]]; then
 		dnf config-manager --set-enabled crb
 		dnf install -y epel-release
