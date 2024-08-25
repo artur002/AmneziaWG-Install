@@ -271,17 +271,15 @@ function installAmneziaWG() {
 		sudo add-apt-repository ppa:amnezia/ppa
   		sudo apt-get install -y amneziawg amneziawg-tools qrencode
 	elif [[ ${OS} == 'debian' ]]; then
-		if ! grep -q "^deb-src" /etc/apt/sources.list; then
-			cp /etc/apt/sources.list /etc/apt/sources.list.d/amneziawg.sources.list
-			sed -i 's/^deb/deb-src/' /etc/apt/sources.list.d/amneziawg.sources.list
-		fi
+		apt-get install -y software-properties-common python3-launchpadlib gnupg2 sudo dpkg-dev
+		sudo apt-get source linux-image-$(uname -r)
+		sudo apt-key adv --keyserver keyserver.ubuntu.com --recv-keys 57290828
 		
-  		apt install -y software-properties-common python3-launchpadlib gnupg2 linux-headers-$(uname -r)
-		apt-key adv --keyserver keyserver.ubuntu.com --recv-keys 57290828
-		echo "deb https://ppa.launchpadcontent.net/amnezia/ppa/ubuntu focal main" | tee -a /etc/apt/sources.list
-		echo "deb-src https://ppa.launchpadcontent.net/amnezia/ppa/ubuntu focal main" | tee -a /etc/apt/sources.list
-		apt-get update
-		apt-get install -y amneziawg amneziawg-tools qrencode
+		echo "deb https://ppa.launchpadcontent.net/amnezia/ppa/ubuntu focal main" | sudo tee -a /etc/apt/sources.list
+		echo "deb-src https://ppa.launchpadcontent.net/amnezia/ppa/ubuntu focal main" | sudo tee -a /etc/apt/sources.list
+		sudo apt-get update
+		
+		sudo apt-get install -y amneziawg amneziawg-tools qrencode
  	elif [[ ${OS} == 'fedora' ]]; then
 		sudo dnf copr enable amneziavpn/amneziawg
 		sudo dnf install amneziawg-dkms amneziawg-tools
